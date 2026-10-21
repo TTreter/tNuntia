@@ -89,7 +89,6 @@ No Windows, basta dar dois cliques em **`iniciar_tnuntia.bat`** ou executar no t
 ```bash
 python run_server.py
 ```
-*(Se desejar iniciar tanto o **tVerbum** quanto o **tNuntia** juntos, execute **`iniciar_ambos.bat`**).*
 
 - **Interface Web de Estúdio**: `http://localhost:8001`
 - **Documentação Interativa (Swagger)**: `http://localhost:8001/docs`
