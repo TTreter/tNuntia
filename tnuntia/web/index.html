@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>tNuntia Studio — Assessoria, Notícias e Redes Sociais da Câmara</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #131c2e;
+      --card-border: #1e293b;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #10b981;
+      --accent-purple: #8b5cf6;
+      --accent-amber: #f59e0b;
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: rgba(19, 28, 46, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: -0.5px;
+    }
+
+    .brand span {
+      background: linear-gradient(135deg, #60a5fa, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .pulse {
+      width: 8px;
+      height: 8px;
+      background: #10b981;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    main {
+      flex: 1;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 32px 24px;
+      width: 100%;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .hero h1 {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      letter-spacing: -0.8px;
+    }
+
+    .hero p {
+      color: var(--text-muted);
+      font-size: 16px;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .input-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      margin-bottom: 32px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .form-group input, .form-group select {
+      background: #0b0f19;
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus, .form-group select:focus {
+      border-color: var(--primary);
+    }
+
+    .btn-submit {
+      background: linear-gradient(135deg, #3b82f6, #6366f1);
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+
+    .btn-submit:hover { opacity: 0.95; }
+    .btn-submit:active { transform: scale(0.99); }
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Results Workspace */
+    .workspace {
+      display: none;
+      grid-template-columns: 420px 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 1024px) {
+      .workspace { grid-template-columns: 1fr; }
+    }
+
+    .sidebar-player {
+      position: sticky;
+      top: 90px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      height: fit-content;
+    }
+
+    .player-container {
+      background: #000;
+      border-radius: var(--radius);
+      overflow: hidden;
+      aspect-ratio: 16/9;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      border: 1px solid var(--card-border);
+    }
+
+    .player-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .telemetry-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 16px;
+      font-size: 13px;
+    }
+
+    .telemetry-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      color: var(--text-muted);
+    }
+
+    .telemetry-item strong { color: var(--text); }
+
+    .content-area {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tabs-header {
+      display: flex;
+      border-bottom: 1px solid var(--card-border);
+      background: rgba(11, 15, 25, 0.6);
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      padding: 16px 20px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      background: rgba(59, 130, 246, 0.08);
+    }
+
+    .tab-content {
+      padding: 24px;
+      display: none;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .tab-content.active { display: flex; }
+
+    /* Cuts Cards */
+    .cuts-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .cut-card {
+      background: #0b0f19;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: border-color 0.2s;
+    }
+
+    .cut-card:hover { border-color: var(--primary); }
+
+    .cut-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cut-time-badge {
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .cut-time-badge:hover { background: rgba(59, 130, 246, 0.3); }
+
+    .cut-virality {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .cut-hook {
+      background: rgba(139, 92, 246, 0.1);
+      border-left: 3px solid #8b5cf6;
+      padding: 8px 12px;
+      border-radius: 0 6px 6px 0;
+      font-size: 13px;
+      color: #ddd6fe;
+    }
+
+    .btn-action {
+      background: #1e293b;
+      color: var(--text);
+      border: 1px solid #334155;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-action:hover { background: #334155; }
+
+    /* News Article */
+    .article-preview {
+      background: #0b0f19;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 32px;
+      line-height: 1.8;
+    }
+
+    .article-headline {
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+
+    .article-deck {
+      font-size: 16px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+
+    .article-lead {
+      font-size: 16px;
+      font-weight: 500;
+      color: #e2e8f0;
+      border-left: 3px solid var(--primary);
+      padding-left: 14px;
+      margin-bottom: 24px;
+    }
+
+    .quote-box {
+      background: rgba(59, 130, 246, 0.08);
+      border-left: 4px solid var(--primary);
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+      margin: 16px 0;
+      font-style: italic;
+    }
+
+    /* Carousel Slides */
+    .carousel-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .slide-card {
+      background: #0b0f19;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 14px;
+    }
+
+    .slide-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-purple);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    /* Loading Spinner */
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255,255,255,0.2);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #10b981;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      display: none;
+      z-index: 100;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <span>🏛️ tNuntia Studio</span>
+    </div>
+    <div class="badge-status">
+      <div class="pulse"></div>
+      <span id="tverbum-status-label">tVerbum Integrado</span>
+    </div>
+  </header>
+
+  <main>
+    <div class="hero">
+      <h1>Comunicação Legislativa Impulsionada por IA</h1>
+      <p>Gere cortes de alta retenção para Shorts/Reels, reportagens com padrão jornalístico e publicações completas para redes sociais a partir do vídeo da sessão da Câmara.</p>
+    </div>
+
+    <div class="input-panel">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: gap: 8px;">
+        <span style="font-size: 14px; font-weight: 700; color: #fff;">Configurações da Sessão</span>
+        <button type="button" onclick="importLatestTverbum()" class="btn-action" style="background: rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.3); color: #60a5fa;">
+          🔄 Puxar Última Ata do tVerbum (1 Clique)
+        </button>
+      </div>
+
+      <form id="generate-form">
+        <div class="form-grid">
+          <div class="form-group" style="grid-column: span 2;">
+            <label>Link da Sessão no YouTube *</label>
+            <input type="url" id="video-url" required placeholder="https://www.youtube.com/watch?v=..." value="">
+          </div>
+          <div class="form-group">
+            <label>Câmara / Órgão</label>
+            <input type="text" id="org-name" placeholder="Ex: Câmara Municipal de Porto Alegre">
+          </div>
+          <div class="form-group">
+            <label>Tom do Conteúdo</label>
+            <select id="audience-tone">
+              <option value="informativo">Informativo (Jornalismo Oficial Neutro)</option>
+              <option value="popular">Popular (Didático para Redes Comunitárias)</option>
+              <option value="institucional">Institucional (Foco em Transparência)</option>
+              <option value="critico">Crítico (Destaque para Debates e Cobranças)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Qtd. de Cortes Sugeridos</label>
+            <select id="cuts-limit">
+              <option value="4">4 Cortes Principais</option>
+              <option value="6" selected>6 Cortes Principais</option>
+              <option value="8">8 Cortes Principais</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>ID da Ata no tVerbum <span style="font-weight: normal; color: #60a5fa;">(100% Opcional)</span></label>
+            <input type="text" id="tverbum-id" placeholder="Opcional: deixe em branco para usar o link">
+          </div>
+        </div>
+
+        <button type="submit" id="submit-btn" class="btn-submit">
+          <span>⚡ Processar Sessão e Gerar Produtos</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Workspace de Resultados -->
+    <div id="workspace" class="workspace">
+      <!-- Barra Lateral com Player Sincronizado -->
+      <div class="sidebar-player">
+        <div class="player-container">
+          <iframe id="yt-player" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+
+        <div class="telemetry-card">
+          <div class="telemetry-item">
+            <span>Estratégia de Tokens:</span>
+            <strong id="meta-strategy" style="color: #34d399;">Reuso tVerbum (Economia ~90%)</strong>
+          </div>
+          <div class="telemetry-item">
+            <span>Modelo Gemini:</span>
+            <strong id="meta-model">gemini-3.8-flash</strong>
+          </div>
+          <div class="telemetry-item">
+            <span>Tempo de Resposta:</span>
+            <strong id="meta-elapsed">14.2s</strong>
+          </div>
+          <div class="telemetry-item">
+            <span>Data Identificada:</span>
+            <strong id="meta-date">2026-10-20</strong>
+          </div>
+        </div>
+
+        <!-- Export Buttons -->
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button class="btn-action" onclick="exportData('docx')">📄 Baixar Word (.docx)</button>
+          <button class="btn-action" onclick="exportData('md')">📝 Baixar Markdown (.md)</button>
+          <button class="btn-action" onclick="exportData('json')">📦 Exportar JSON</button>
+        </div>
+      </div>
+
+      <!-- Área de Conteúdo com Abas -->
+      <div class="content-area">
+        <div class="tabs-header">
+          <button class="tab-btn active" onclick="switchTab('cuts')">🎬 Cortes de Vídeo (<span id="cuts-count">0</span>)</button>
+          <button class="tab-btn" onclick="switchTab('news')">📰 Notícia Jornalística</button>
+          <button class="tab-btn" onclick="switchTab('social')">📱 Redes Sociais & WhatsApp</button>
+          <button class="tab-btn" onclick="switchTab('summary')">📌 Resumo Executivo</button>
+        </div>
+
+        <!-- Tab 1: Cortes -->
+        <div id="tab-cuts" class="tab-content active">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <p style="color: var(--text-muted); font-size: 14px;">Clique no tempo de qualquer corte para reproduzir no player instantaneamente.</p>
+          </div>
+          <div id="cuts-container" class="cuts-grid"></div>
+        </div>
+
+        <!-- Tab 2: Notícia -->
+        <div id="tab-news" class="tab-content">
+          <div style="display: flex; justify-content: flex-end;">
+            <button class="btn-action" onclick="copyNews()">📋 Copiar Notícia Completa</button>
+          </div>
+          <div id="news-article" class="article-preview"></div>
+        </div>
+
+        <!-- Tab 3: Redes Sociais -->
+        <div id="tab-social" class="tab-content">
+          <h3 style="color: #60a5fa;">📸 Instagram & Facebook</h3>
+          <div style="background: #0b0f19; border: 1px solid var(--card-border); border-radius: 8px; padding: 16px;">
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 8px;">
+              <button class="btn-action" onclick="copyText(window.currentOutput.social.instagram_caption)">📋 Copiar Legenda</button>
+            </div>
+            <pre id="insta-caption" style="white-space: pre-wrap; font-family: inherit; font-size: 14px; line-height: 1.6;"></pre>
+          </div>
+
+          <h4 style="margin-top: 10px;">🎠 Roteiro de Carrossel (Slides)</h4>
+          <div id="insta-carousel" class="carousel-grid"></div>
+
+          <hr style="border-color: var(--card-border); margin: 16px 0;">
+
+          <h3 style="color: #34d399;">💬 Boletim Formatado para WhatsApp</h3>
+          <div style="background: #0b0f19; border: 1px solid var(--card-border); border-radius: 8px; padding: 16px;">
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 8px;">
+              <button class="btn-action" onclick="copyText(window.currentOutput.social.whatsapp_bulletin)">📋 Copiar Boletim</button>
+            </div>
+            <pre id="whatsapp-text" style="white-space: pre-wrap; font-family: inherit; font-size: 14px; line-height: 1.6;"></pre>
+          </div>
+
+          <hr style="border-color: var(--card-border); margin: 16px 0;">
+
+          <h3 style="color: #a78bfa;">🐦 Fio para X (Twitter)</h3>
+          <div id="twitter-thread" style="display: flex; flex-direction: column; gap: 8px;"></div>
+        </div>
+
+        <!-- Tab 4: Resumo Executivo -->
+        <div id="tab-summary" class="tab-content">
+          <div style="background: #0b0f19; border: 1px solid var(--card-border); border-radius: 8px; padding: 24px; line-height: 1.8;">
+            <h3 style="margin-bottom: 12px; color: #fff;">Resumo Geral da Sessão</h3>
+            <p id="summary-exec" style="margin-bottom: 20px;"></p>
+            <h4 style="color: #60a5fa; margin-bottom: 8px;">Deliberações e Decisões Chave:</h4>
+            <ul id="summary-decisions" style="padding-left: 20px; margin-bottom: 20px;"></ul>
+            <h4 style="color: #a78bfa; margin-bottom: 8px;">Principais Temas em Pauta:</h4>
+            <div id="summary-themes" style="display: flex; gap: 8px; flex-wrap: wrap;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div id="toast" class="toast">Texto copiado para a área de transferência!</div>
+
+  <script>
+    window.currentOutput = null;
+
+    // Checa status de conexão com tVerbum
+    async function checkHealth() {
+      try {
+        const res = await fetch('/api/health');
+        const data = await res.json();
+        const lbl = document.getElementById('tverbum-status-label');
+        if (data.tverbum_api.status === 'online') {
+          lbl.innerText = 'tVerbum Conectado';
+        } else if (data.shared_cache.exists) {
+          lbl.innerText = 'Cache tVerbum Ativo';
+        } else {
+          lbl.innerText = 'Modo Autônomo';
+        }
+      } catch (e) {}
+    }
+    checkHealth();
+
+    // Carrega último resultado gerado se já existir em memória
+    async function checkRecentResults() {
+      try {
+        const res = await fetch('/api/results');
+        const data = await res.json();
+        if (data && data.length > 0) {
+          renderResults(data[data.length - 1]);
+        }
+      } catch (e) {}
+    }
+    checkRecentResults();
+
+    // Puxa última ata gerada no tVerbum com 1 clique
+    async function importLatestTverbum() {
+      try {
+        const res = await fetch('/api/tverbum/latest');
+        const data = await res.json();
+        if (data.found) {
+          if (data.video_url) document.getElementById('video-url').value = data.video_url;
+          if (data.organization_name) document.getElementById('org-name').value = data.organization_name;
+          if (data.session_id) document.getElementById('tverbum-id').value = data.session_id;
+
+          if (data.video_url) {
+            showToast('Sessão "' + (data.title || 'Ata') + '" importada com sucesso!');
+          } else {
+            showToast('Ata "' + (data.title || 'Ata') + '" importada! Cole o link do YouTube para os cortes.');
+            if (!document.getElementById('video-url').value) {
+              document.getElementById('video-url').focus();
+            }
+          }
+        } else {
+          alert(data.message || 'Nenhuma ata recente encontrada no tVerbum. Gere uma ata primeiro no tVerbum (porta 8000).');
+        }
+      } catch (e) {
+        alert('Não foi possível conectar ao tVerbum. Verifique se ele está aberto em http://localhost:8000.');
+      }
+    }
+
+    document.getElementById('generate-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner"></div><span>Processando Sessão com Google Gemini...</span>';
+
+      const payload = {
+        video_url: document.getElementById('video-url').value,
+        organization_name: document.getElementById('org-name').value,
+        audience_tone: document.getElementById('audience-tone').value,
+        cuts_limit: parseInt(document.getElementById('cuts-limit').value),
+        tverbum_session_id: document.getElementById('tverbum-id').value.trim() || null,
+      };
+
+      try {
+        const res = await fetch('/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.detail || 'Erro ao processar');
+        }
+
+        const data = await res.json();
+        renderResults(data);
+      } catch (err) {
+        alert('Erro: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>⚡ Processar Sessão e Gerar Produtos</span>';
+      }
+    });
+
+    function renderResults(data) {
+      window.currentOutput = data;
+      document.getElementById('workspace').style.display = 'grid';
+
+      // Telemetria
+      document.getElementById('meta-strategy').innerText = data.metadata.token_savings_strategy === 'reuso_de_transcricao_e_ata' ? 'Reuso tVerbum (~90% Econ.)' : 'Ingestão Direta';
+      document.getElementById('meta-model').innerText = data.metadata.model_used;
+      document.getElementById('meta-elapsed').innerText = data.metadata.elapsed_seconds + 's';
+      document.getElementById('meta-date').innerText = data.session_date || 'N/A';
+      document.getElementById('cuts-count').innerText = data.cuts.length;
+
+      // Player YouTube
+      const videoId = data.video_id;
+      const initialSec = data.cuts[0] ? parseTime(data.cuts[0].start_time) : 0;
+      setPlayerTime(videoId, initialSec);
+
+      // Renderiza Cortes
+      const cutsBox = document.getElementById('cuts-container');
+      cutsBox.innerHTML = '';
+      data.cuts.forEach((cut, idx) => {
+        const sec = parseTime(cut.start_time);
+        const card = document.createElement('div');
+        card.className = 'cut-card';
+        card.innerHTML = `
+          <div class="cut-top">
+            <span class="cut-time-badge" onclick="setPlayerTime('${videoId}', ${sec})">
+              ▶ ${cut.start_time} - ${cut.end_time} (${cut.duration_seconds}s)
+            </span>
+            <span class="cut-virality">★ Relevância ${cut.virality_score}/10</span>
+          </div>
+          <h3 style="font-size: 16px; color: #fff;">${cut.title}</h3>
+          <div class="cut-hook"><strong>Gancho (3s):</strong> "${cut.hook}"</div>
+          <p style="font-size: 13px; color: var(--text-muted);">${cut.summary || ''}</p>
+          <div style="display: flex; gap: 8px; margin-top: 4px;">
+            <button class="btn-action" onclick="copyText('${cut.title}\\n${cut.hook}')">📋 Copiar Gancho</button>
+            <button class="btn-action" onclick="setPlayerTime('${videoId}', ${sec})">▶ Assistir Trecho</button>
+          </div>
+        `;
+        cutsBox.appendChild(card);
+      });
+
+      // Renderiza Notícia
+      const newsBox = document.getElementById('news-article');
+      let newsHtml = `
+        <h1 class="article-headline">${data.news.headline}</h1>
+        ${data.news.deck ? `<div class="article-deck">${data.news.deck}</div>` : ''}
+        <div class="article-lead">${data.news.lead}</div>
+        <div style="margin-bottom: 20px; white-space: pre-wrap;">${data.news.body}</div>
+      `;
+      if (data.news.quotes && data.news.quotes.length) {
+        newsHtml += `<h3>Declarações em Destaque:</h3>`;
+        data.news.quotes.forEach(q => {
+          newsHtml += `<div class="quote-box">"${q.quote}"<br><strong style="font-style: normal; color: #94a3b8;">— ${q.speaker}</strong></div>`;
+        });
+      }
+      newsBox.innerHTML = newsHtml;
+
+      // Renderiza Redes Sociais
+      document.getElementById('insta-caption').innerText = data.social.instagram_caption;
+      const carouselBox = document.getElementById('insta-carousel');
+      carouselBox.innerHTML = '';
+      if (data.social.instagram_carousel) {
+        data.social.instagram_carousel.forEach(s => {
+          const sc = document.createElement('div');
+          sc.className = 'slide-card';
+          sc.innerHTML = `
+            <div class="slide-num">Slide ${s.slide_number}</div>
+            <strong style="display: block; font-size: 13px; margin-bottom: 4px; color: #fff;">${s.title}</strong>
+            <p style="font-size: 12px; color: var(--text-muted);">${s.content}</p>
+          `;
+          carouselBox.appendChild(sc);
+        });
+      }
+
+      document.getElementById('whatsapp-text').innerText = data.social.whatsapp_bulletin;
+
+      // Twitter
+      const twBox = document.getElementById('twitter-thread');
+      twBox.innerHTML = '';
+      if (data.social.twitter_thread) {
+        data.social.twitter_thread.forEach((t, i) => {
+          const tweetEl = document.createElement('div');
+          tweetEl.style = "background: #0b0f19; border: 1px solid var(--card-border); border-radius: 8px; padding: 12px;";
+          tweetEl.innerHTML = `<span style="color: #60a5fa; font-weight: 700; font-size: 12px;">Tweet ${i+1}/${data.social.twitter_thread.length} (${t.length} caracteres)</span><p style="margin-top: 4px; font-size: 14px;">${t}</p>`;
+          twBox.appendChild(tweetEl);
+        });
+      }
+
+      // Resumo Executivo
+      document.getElementById('summary-exec').innerText = data.highlights.executive_summary;
+      const decBox = document.getElementById('summary-decisions');
+      decBox.innerHTML = '';
+      (data.highlights.key_decisions || []).forEach(d => {
+        decBox.innerHTML += `<li>${d}</li>`;
+      });
+      const thmBox = document.getElementById('summary-themes');
+      thmBox.innerHTML = '';
+      (data.highlights.main_themes || []).forEach(t => {
+        thmBox.innerHTML += `<span style="background: rgba(139, 92, 246, 0.2); color: #c4b5fd; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600;">${t}</span>`;
+      });
+
+      // Scroll suave até os resultados
+      document.getElementById('workspace').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function switchTab(name) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      document.getElementById('tab-' + name).classList.add('active');
+    }
+
+    function parseTime(t) {
+      if (!t) return 0;
+      const parts = t.replace(/[\[\]]/g, '').split(':').map(Number);
+      if (parts.length === 3) return parts[0]*3600 + parts[1]*60 + parts[2];
+      if (parts.length === 2) return parts[0]*60 + parts[1];
+      return parts[0] || 0;
+    }
+
+    function setPlayerTime(videoId, seconds) {
+      const player = document.getElementById('yt-player');
+      player.src = `https://www.youtube.com/embed/${videoId}?start=${seconds}&autoplay=1`;
+    }
+
+    function copyText(txt) {
+      navigator.clipboard.writeText(txt);
+      showToast();
+    }
+
+    function copyNews() {
+      if (!window.currentOutput) return;
+      const n = window.currentOutput.news;
+      const fullNews = `${n.headline}\n\n${n.deck}\n\n${n.lead}\n\n${n.body}`;
+      navigator.clipboard.writeText(fullNews);
+      showToast();
+    }
+
+    function showToast() {
+      const t = document.getElementById('toast');
+      t.style.display = 'block';
+      setTimeout(() => { t.style.display = 'none'; }, 2200);
+    }
+
+    async function exportData(fmt) {
+      if (!window.currentOutput) return;
+      const res = await fetch('/api/export', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ format: fmt, output: window.currentOutput })
+      });
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `dossie_comunicacao_${window.currentOutput.id}.${fmt}`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+  </script>
+</body>
+</html>
